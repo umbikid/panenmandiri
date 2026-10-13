@@ -22,7 +22,7 @@ const filteredProvinces = computed(() => {
         }
         
         const filteredRegencies = prov.regencies.filter(reg => 
-            (reg.type + ' ' + reg.name).toLowerCase().includes(q)
+            reg.name.toLowerCase().includes(q)
         );
         
         if (filteredRegencies.length > 0) {
@@ -143,7 +143,7 @@ const vIndeterminate = {
                         :checked="modelValue.includes(reg.id)"
                         @change="toggleRegency(reg.id, $event)"
                     >
-                    <span class="ml-2 text-sm text-gray-600 truncate" :title="reg.type + ' ' + reg.name">{{ reg.type }} {{ reg.name }}</span>
+                    <span class="ml-2 text-sm text-gray-600 truncate" :title="reg.name">{{ reg.name }}</span>
                 </label>
             </div>
         </div>
