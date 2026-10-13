@@ -19,7 +19,7 @@ if (props.filters.regency_id) {
     for (const prov of props.provinces) {
         const reg = prov.regencies.find(r => r.id == props.filters.regency_id);
         if (reg) {
-            initialRegencyName = reg.type + ' ' + reg.name;
+            initialRegencyName = reg.name;
             break;
         }
     }
@@ -28,11 +28,17 @@ const searchRegencyName = ref(initialRegencyName);
 
 const updateRegencyId = () => {
     let foundId = '';
-    for (const prov of props.provinces) {
-        const reg = prov.regencies.find(r => (r.type + ' ' + r.name) === searchRegencyName.value);
-        if (reg) {
-            foundId = reg.id;
-            break;
+    const query = (searchRegencyName.value || '').trim().toLowerCase();
+    if (query) {
+        for (const prov of props.provinces) {
+            const reg = prov.regencies.find(r => 
+                r.name.toLowerCase() === query || 
+                (r.type && (r.type + ' ' + r.name).toLowerCase() === query)
+            );
+            if (reg) {
+                foundId = reg.id;
+                break;
+            }
         }
     }
     
@@ -109,7 +115,7 @@ watch([searchCategory, searchRegency], () => {
                     >
                     <datalist id="regency-options">
                         <template v-for="prov in provinces" :key="prov.id">
-                            <option v-for="reg in prov.regencies" :key="reg.id" :value="reg.type + ' ' + reg.name"></option>
+                            <option v-for="reg in prov.regencies" :key="reg.id" :value="reg.name"></option>
                         </template>
                     </datalist>
                 </div>

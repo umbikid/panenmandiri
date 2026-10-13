@@ -83,7 +83,7 @@ const submit = () => {
                         <select v-model="form.delivery_regency_id" required class="w-full border-gray-300 rounded-md focus:border-green-700 focus:ring-green-700">
                             <option value="" disabled>Pilih wilayah pengiriman</option>
                             <option v-for="cov in product.coverages" :key="cov.id" :value="cov.regency_id">
-                                {{ cov.regency?.type }} {{ cov.regency?.name }}
+                                {{ cov.regency?.name }}
                             </option>
                         </select>
                         <p v-if="form.errors.delivery_regency_id" class="text-red-500 text-xs mt-1">{{ form.errors.delivery_regency_id }}</p>

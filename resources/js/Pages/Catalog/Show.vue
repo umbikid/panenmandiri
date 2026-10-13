@@ -73,7 +73,7 @@ const buy = () => {
                         <h3 class="text-sm font-bold text-gray-800 mb-2">Jangkauan Pengiriman:</h3>
                         <div class="flex flex-wrap gap-2">
                             <span v-for="cov in product.coverages" :key="cov.id" class="px-2 py-1 bg-green-50 text-green-800 text-xs rounded border border-green-100">
-                                {{ cov.regency?.type }} {{ cov.regency?.name }}
+                                {{ cov.regency?.name }}
                             </span>
                         </div>
                     </div>
