@@ -10,9 +10,9 @@ class TestAccountSeeder extends Seeder
 {
     public function run(): void
     {
-        if (! app()->environment(['local', 'staging'])) {
-            return;
-        }
+        $province = \App\Models\Province::first();
+        $regency = \App\Models\Regency::first();
+        $district = \App\Models\District::first();
 
         $accounts = [
             ['name' => 'Admin',          'email' => 'umbikidtv@gmail.com', 'password' => 'admin123',   'role' => 'admin',   'phone' => '6281200000001'],
@@ -28,9 +28,9 @@ class TestAccountSeeder extends Seeder
                 'status'               => 'active',
                 'email_verified_at'    => now(),
                 'profile_completed_at' => now(),
-                'province_id'          => 1, // dummy
-                'regency_id'           => 1, // dummy
-                'district_id'          => 1, // dummy
+                'province_id'          => $province?->id,
+                'regency_id'           => $regency?->id,
+                'district_id'          => $district?->id,
             ]);
             $user->syncRoles($a['role']);
         }
