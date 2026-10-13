@@ -52,23 +52,31 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($categories as $idx => $cat) {
-            $category = Category::firstOrCreate([
-                'name' => $cat['name'],
-                'slug' => Str::slug($cat['name']),
-                'type' => $cat['type'],
-                'allowed_units' => json_encode($cat['allowed_units']),
-                'sort_order' => $idx
-            ]);
+            $category = Category::updateOrCreate(
+                ['slug' => Str::slug($cat['name'])],
+                [
+                    'name' => $cat['name'],
+                    'type' => $cat['type'],
+                    'allowed_units' => json_encode($cat['allowed_units']),
+                    'sort_order' => $idx,
+                    'is_active' => true,
+                ]
+            );
 
             foreach ($cat['subcategories'] as $subIdx => $sub) {
-                Subcategory::firstOrCreate([
-                    'category_id' => $category->id,
-                    'name' => $sub['name'],
-                    'label' => $sub['label'],
-                    'min_weight_kg' => $sub['min_weight_kg'] ?? null,
-                    'max_weight_kg' => $sub['max_weight_kg'] ?? null,
-                    'sort_order' => $subIdx
-                ]);
+                Subcategory::updateOrCreate(
+                    [
+                        'category_id' => $category->id,
+                        'name' => $sub['name'],
+                    ],
+                    [
+                        'label' => $sub['label'],
+                        'min_weight_kg' => $sub['min_weight_kg'] ?? null,
+                        'max_weight_kg' => $sub['max_weight_kg'] ?? null,
+                        'sort_order' => $subIdx,
+                        'is_active' => true,
+                    ]
+                );
             }
         }
     }
