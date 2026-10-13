@@ -21,7 +21,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (app()->environment('production') || str_contains(request()->url(), 'railway.app') || str_contains(config('app.url'), 'https://')) {
+        if (
+            app()->environment('production') 
+            || (isset($_SERVER['HTTP_HOST']) && str_contains($_SERVER['HTTP_HOST'], 'railway.app'))
+            || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+            || str_contains(config('app.url'), 'https://')
+        ) {
             URL::forceScheme('https');
         }
 
