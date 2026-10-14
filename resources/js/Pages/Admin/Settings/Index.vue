@@ -8,7 +8,6 @@ const props = defineProps({
 
 const form = useForm({
     cs_whatsapp_number: props.settings.cs_whatsapp_number,
-    app_name: props.settings.app_name,
 });
 
 const submit = () => {
@@ -27,7 +26,7 @@ const submit = () => {
                         Pengaturan Sistem & Kontak CS
                     </h2>
                     <p class="text-xs text-gray-500 mt-1">
-                        Konfigurasi nomor WhatsApp CS tujuan pesanan dan informasi umum aplikasi.
+                        Konfigurasi nomor WhatsApp CS tujuan pesanan.
                     </p>
                 </div>
             </div>
@@ -37,20 +36,6 @@ const submit = () => {
             <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-6">
                     <form @submit.prevent="submit" class="space-y-6">
-                        <!-- Nama Aplikasi -->
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-                                Nama Aplikasi
-                            </label>
-                            <input
-                                type="text"
-                                v-model="form.app_name"
-                                required
-                                class="w-full text-sm rounded-lg border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
-                            />
-                            <p class="text-[10px] text-gray-400 mt-1">Nama platform yang ditampilkan pada header dan judul halaman.</p>
-                        </div>
-
                         <!-- Nomor WhatsApp CS -->
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
