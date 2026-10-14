@@ -1,26 +1,85 @@
 <script setup>
+import { ref } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
+import axios from 'axios';
 
-defineProps({
+const props = defineProps({
     mustVerifyEmail: {
         type: Boolean,
     },
     status: {
         type: String,
     },
+    provinces: {
+        type: Array,
+        default: () => [],
+    },
+    initialRegencies: {
+        type: Array,
+        default: () => [],
+    },
+    initialDistricts: {
+        type: Array,
+        default: () => [],
+    },
 });
 
 const user = usePage().props.auth.user;
 
 const form = useForm({
-    name: user.name,
-    email: user.email,
-    phone: user.phone,
+    name: user.name || '',
+    email: user.email || '',
+    phone: user.phone || '',
+    address: user.address || '',
+    province_id: user.province_id || '',
+    regency_id: user.regency_id || '',
+    district_id: user.district_id || '',
 });
+
+const regencies = ref([...props.initialRegencies]);
+const districts = ref([...props.initialDistricts]);
+const fetchingRegencies = ref(false);
+const fetchingDistricts = ref(false);
+
+const fetchRegencies = async () => {
+    form.regency_id = '';
+    form.district_id = '';
+    regencies.value = [];
+    districts.value = [];
+    
+    if (!form.province_id) return;
+    
+    fetchingRegencies.value = true;
+    try {
+        const response = await axios.get(`/api/provinces/${form.province_id}/regencies`);
+        regencies.value = response.data;
+    } catch (error) {
+        console.error("Failed to fetch regencies", error);
+    } finally {
+        fetchingRegencies.value = false;
+    }
+};
+
+const fetchDistricts = async () => {
+    form.district_id = '';
+    districts.value = [];
+    
+    if (!form.regency_id) return;
+    
+    fetchingDistricts.value = true;
+    try {
+        const response = await axios.get(`/api/regencies/${form.regency_id}/districts`);
+        districts.value = response.data;
+    } catch (error) {
+        console.error("Failed to fetch districts", error);
+    } finally {
+        fetchingDistricts.value = false;
+    }
+};
 </script>
 
 <template>
@@ -31,7 +90,7 @@ const form = useForm({
             </h2>
 
             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                Akun anda adalah akun {{ user.roles[0] }}. Perbarui informasi profil dan alamat email Anda.
+                Akun anda adalah akun {{ user.roles?.[0] || 'pengguna' }}. Perbarui informasi profil dan alamat Anda.
             </p>
         </header>
 
@@ -80,6 +139,65 @@ const form = useForm({
                 />
 
                 <InputError class="mt-2" :message="form.errors.email" />
+            </div>
+
+            <div>
+                <InputLabel for="address" value="Alamat Lengkap" />
+                <textarea
+                    id="address"
+                    class="mt-1 block w-full border-gray-300 focus:border-green-700 focus:ring-green-700 rounded-md shadow-sm"
+                    v-model="form.address"
+                    required
+                    rows="3"
+                    placeholder="Contoh: Jl. Mawar No. 12, RT 01/RW 02"
+                ></textarea>
+                <InputError class="mt-2" :message="form.errors.address" />
+            </div>
+
+            <div>
+                <InputLabel for="province_id" value="Provinsi" />
+                <select
+                    id="province_id"
+                    class="mt-1 block w-full border-gray-300 focus:border-green-700 focus:ring-green-700 rounded-md shadow-sm"
+                    v-model="form.province_id"
+                    @change="fetchRegencies"
+                    required
+                >
+                    <option value="" disabled>Pilih Provinsi</option>
+                    <option v-for="prov in provinces" :key="prov.id" :value="prov.id">{{ prov.name }}</option>
+                </select>
+                <InputError class="mt-2" :message="form.errors.province_id" />
+            </div>
+
+            <div>
+                <InputLabel for="regency_id" value="Kota/Kabupaten" />
+                <select
+                    id="regency_id"
+                    class="mt-1 block w-full border-gray-300 focus:border-green-700 focus:ring-green-700 rounded-md shadow-sm disabled:bg-gray-100"
+                    v-model="form.regency_id"
+                    @change="fetchDistricts"
+                    required
+                    :disabled="!form.province_id || fetchingRegencies"
+                >
+                    <option value="" disabled>{{ fetchingRegencies ? 'Memuat Kota...' : 'Pilih Kota/Kabupaten' }}</option>
+                    <option v-for="reg in regencies" :key="reg.id" :value="reg.id">{{ reg.name }}</option>
+                </select>
+                <InputError class="mt-2" :message="form.errors.regency_id" />
+            </div>
+
+            <div>
+                <InputLabel for="district_id" value="Kecamatan" />
+                <select
+                    id="district_id"
+                    class="mt-1 block w-full border-gray-300 focus:border-green-700 focus:ring-green-700 rounded-md shadow-sm disabled:bg-gray-100"
+                    v-model="form.district_id"
+                    required
+                    :disabled="!form.regency_id || fetchingDistricts"
+                >
+                    <option value="" disabled>{{ fetchingDistricts ? 'Memuat Kecamatan...' : 'Pilih Kecamatan' }}</option>
+                    <option v-for="dist in districts" :key="dist.id" :value="dist.id">{{ dist.name }}</option>
+                </select>
+                <InputError class="mt-2" :message="form.errors.district_id" />
             </div>
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">

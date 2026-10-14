@@ -18,9 +18,23 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $user = $request->user();
+        $provinces = \App\Models\Province::orderBy('name')->get();
+
+        $initialRegencies = $user->province_id
+            ? \App\Models\Regency::where('province_id', $user->province_id)->orderBy('name')->get()
+            : [];
+
+        $initialDistricts = $user->regency_id
+            ? \App\Models\District::where('regency_id', $user->regency_id)->orderBy('name')->get()
+            : [];
+
         return Inertia::render('Profile/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
+            'provinces' => $provinces,
+            'initialRegencies' => $initialRegencies,
+            'initialDistricts' => $initialDistricts,
         ]);
     }
 
@@ -29,13 +43,23 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $user->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($request->filled('district_id')) {
+            $district = \App\Models\District::with('regency')->find($request->district_id);
+            if ($district) {
+                $user->province_id = $district->regency->province_id;
+                $user->regency_id = $district->regency_id;
+                $user->district_id = $district->id;
+            }
         }
 
-        $request->user()->save();
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
 
         return Redirect::route('profile.edit');
     }

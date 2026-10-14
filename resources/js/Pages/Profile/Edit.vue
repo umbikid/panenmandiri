@@ -12,6 +12,18 @@ defineProps({
     status: {
         type: String,
     },
+    provinces: {
+        type: Array,
+        default: () => [],
+    },
+    initialRegencies: {
+        type: Array,
+        default: () => [],
+    },
+    initialDistricts: {
+        type: Array,
+        default: () => [],
+    },
 });
 </script>
 
@@ -35,6 +47,9 @@ defineProps({
                     <UpdateProfileInformationForm
                         :must-verify-email="mustVerifyEmail"
                         :status="status"
+                        :provinces="provinces"
+                        :initial-regencies="initialRegencies"
+                        :initial-districts="initialDistricts"
                         class="max-w-xl"
                     />
                 </div>

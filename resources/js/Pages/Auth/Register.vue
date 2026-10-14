@@ -171,7 +171,7 @@ const submit = () => {
                     :disabled="!form.province_id || fetchingRegencies"
                 >
                     <option value="" disabled>{{ fetchingRegencies ? 'Memuat Kota...' : 'Pilih Kota/Kabupaten' }}</option>
-                    <option v-for="reg in regencies" :key="reg.id" :value="reg.id">{{ reg.type }} {{ reg.name }}</option>
+                    <option v-for="reg in regencies" :key="reg.id" :value="reg.id">{{ reg.name }}</option>
                 </select>
                 <InputError class="mt-2" :message="form.errors.regency_id" />
             </div>
