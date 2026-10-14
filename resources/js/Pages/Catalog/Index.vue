@@ -50,6 +50,25 @@ const updateRegencyId = () => {
     searchRegency.value = foundId;
 };
 
+const failedImages = ref({});
+
+const handleImageError = (productId) => {
+    failedImages.value[productId] = true;
+};
+
+const getProductImage = (product) => {
+    if (failedImages.value[product.id]) {
+        return null;
+    }
+    if (product.primary_photo?.path) {
+        return '/storage/' + product.primary_photo.path;
+    }
+    if (product.photos && product.photos.length > 0 && product.photos[0]?.path) {
+        return '/storage/' + product.photos[0].path;
+    }
+    return null;
+};
+
 const formatRupiah = (number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
 };
@@ -128,9 +147,20 @@ watch([searchCategory, searchRegency], () => {
 
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 <Link v-for="product in products.data" :key="product.id" :href="route('catalog.show', product.id)" class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition">
-                    <div class="aspect-square bg-gray-100 relative">
-                        <img v-if="product.primary_photo" :src="'/storage/' + product.primary_photo.path" :alt="product.name" class="w-full h-full object-cover">
-                        <div v-else class="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
+                    <div class="aspect-square bg-gray-100 relative overflow-hidden">
+                        <img 
+                            v-if="getProductImage(product)" 
+                            :src="getProductImage(product)" 
+                            :alt="product.name" 
+                            class="w-full h-full object-cover"
+                            @error="handleImageError(product.id)"
+                        >
+                        <div v-else class="w-full h-full flex flex-col items-center justify-center text-gray-400 text-xs gap-1 bg-gray-50">
+                            <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span>No Image</span>
+                        </div>
                         
                         <div class="absolute top-2 right-2 bg-white bg-opacity-90 px-2 py-0.5 rounded text-[10px] font-bold text-green-800 shadow-sm">
                             {{ product.category?.name }}

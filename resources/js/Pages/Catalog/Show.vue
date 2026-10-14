@@ -14,6 +14,11 @@ const formatRupiah = (number) => {
 import { router } from '@inertiajs/vue3';
 
 const activePhotoIndex = ref(0);
+const photoErrors = ref({});
+
+const handlePhotoError = (index) => {
+    photoErrors.value[index] = true;
+};
 
 const buy = () => {
     router.get(route('checkout.create', props.product.id));
@@ -38,13 +43,31 @@ const buy = () => {
                 <!-- Gallery -->
                 <div class="w-full md:w-1/2 p-4">
                     <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-3 relative">
-                        <img v-if="product.photos && product.photos.length > 0" :src="'/storage/' + product.photos[activePhotoIndex].path" class="w-full h-full object-cover">
-                        <div v-else class="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
+                        <img 
+                            v-if="product.photos && product.photos.length > 0 && !photoErrors[activePhotoIndex]" 
+                            :src="'/storage/' + product.photos[activePhotoIndex].path" 
+                            class="w-full h-full object-cover"
+                            @error="handlePhotoError(activePhotoIndex)"
+                        >
+                        <div v-else class="w-full h-full flex flex-col items-center justify-center text-gray-400 bg-gray-50">
+                            <svg class="w-12 h-12 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span>Tidak ada gambar</span>
+                        </div>
                     </div>
                     
                     <div v-if="product.photos && product.photos.length > 1" class="flex space-x-2 overflow-x-auto pb-2">
-                        <button v-for="(photo, index) in product.photos" :key="photo.id" @click="activePhotoIndex = index" class="w-16 h-16 shrink-0 rounded-md overflow-hidden border-2" :class="activePhotoIndex === index ? 'border-green-600' : 'border-transparent opacity-70'">
-                            <img :src="'/storage/' + photo.path" class="w-full h-full object-cover">
+                        <button v-for="(photo, index) in product.photos" :key="photo.id" @click="activePhotoIndex = index" class="w-16 h-16 shrink-0 rounded-md overflow-hidden border-2 bg-gray-100 relative" :class="activePhotoIndex === index ? 'border-green-600' : 'border-transparent opacity-70'">
+                            <img 
+                                v-if="!photoErrors[index]" 
+                                :src="'/storage/' + photo.path" 
+                                class="w-full h-full object-cover"
+                                @error="handlePhotoError(index)"
+                            >
+                            <div v-else class="w-full h-full flex items-center justify-center text-gray-400 text-[10px]">
+                                No Image
+                            </div>
                         </button>
                     </div>
                 </div>

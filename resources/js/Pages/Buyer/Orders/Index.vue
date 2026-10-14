@@ -46,15 +46,16 @@ const formatRupiah = (amount) => {
             <div v-else class="space-y-4">
                 <div v-for="order in orders" :key="order.id" class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col md:flex-row">
                     <!-- Photo -->
-                    <div class="w-full md:w-48 h-48 md:h-full shrink-0 relative bg-gray-100">
-                        <img 
-                            v-if="order.items[0]?.product?.primary_photo" 
-                            :src="'/storage/' + order.items[0].product.primary_photo.path" 
-                            class="absolute inset-0 w-full h-full object-cover"
-                        >
-                        <div v-else class="absolute inset-0 flex items-center justify-center text-gray-400">
+                    <div class="w-full md:w-48 h-48 md:h-full shrink-0 relative bg-gray-100 flex items-center justify-center">
+                        <div class="absolute inset-0 flex items-center justify-center text-gray-400">
                             No Image
                         </div>
+                        <img 
+                            v-if="order.items[0]?.product?.primary_photo || order.items[0]?.product?.photos?.[0]" 
+                            :src="'/storage/' + (order.items[0]?.product?.primary_photo?.path || order.items[0]?.product?.photos?.[0]?.path)" 
+                            class="absolute inset-0 w-full h-full object-cover"
+                            @error="(e) => e.target.style.display = 'none'"
+                        >
                     </div>
                     
                     <div class="p-4 flex-grow flex flex-col justify-between">

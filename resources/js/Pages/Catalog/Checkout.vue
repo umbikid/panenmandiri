@@ -1,7 +1,9 @@
 <script setup>
 import PublicLayout from '@/Layouts/PublicLayout.vue';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+
+const hasImageError = ref(false);
 
 const props = defineProps({
     product: Object
@@ -38,8 +40,16 @@ const submit = () => {
 
             <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mb-6">
                 <div class="p-4 border-b border-gray-100 flex items-center">
-                    <div class="w-16 h-16 bg-gray-100 rounded overflow-hidden mr-4 shrink-0">
-                        <img v-if="product.primary_photo" :src="'/storage/' + product.primary_photo.path" class="w-full h-full object-cover">
+                    <div class="w-16 h-16 bg-gray-100 rounded overflow-hidden mr-4 shrink-0 relative flex items-center justify-center">
+                        <img 
+                            v-if="(product.primary_photo?.path || product.photos?.[0]?.path) && !hasImageError" 
+                            :src="'/storage/' + (product.primary_photo?.path || product.photos[0].path)" 
+                            class="w-full h-full object-cover"
+                            @error="hasImageError = true"
+                        >
+                        <div v-else class="text-gray-400 text-[10px] text-center">
+                            No Image
+                        </div>
                     </div>
                     <div>
                         <h3 class="font-bold text-gray-900">{{ product.name }}</h3>

@@ -19,7 +19,7 @@ class OrderController extends Controller
             abort(404, 'Produk tidak tersedia.');
         }
 
-        $product->load(['coverages.regency', 'primaryPhoto']);
+        $product->load(['coverages.regency', 'primaryPhoto', 'photos']);
 
         return Inertia::render('Catalog/Checkout', [
             'product' => $product

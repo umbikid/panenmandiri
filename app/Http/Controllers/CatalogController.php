@@ -26,7 +26,7 @@ class CatalogController extends Controller
                     $q->where('regency_id', $id);
                 });
             })
-            ->with(['category', 'subcategory', 'primaryPhoto', 'partner'])
+            ->with(['category', 'subcategory', 'primaryPhoto', 'photos', 'partner'])
             ->latest()
             ->paginate(12);
 

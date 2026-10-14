@@ -65,9 +65,15 @@ const cancelDelete = () => {
                     <div v-for="product in products" :key="product.id" class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
                         <div class="flex p-4">
                             <!-- Thumbnail -->
-                            <div class="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-md overflow-hidden mr-4">
-                                <img v-if="product.primary_photo" :src="'/storage/' + product.primary_photo.path" :alt="product.name" class="w-full h-full object-cover">
-                                <div v-else class="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
+                            <div class="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-md overflow-hidden mr-4 relative flex items-center justify-center">
+                                <div class="absolute inset-0 flex items-center justify-center text-gray-400 text-xs">No Image</div>
+                                <img 
+                                    v-if="product.primary_photo?.path || product.photos?.[0]?.path" 
+                                    :src="'/storage/' + (product.primary_photo?.path || product.photos[0].path)" 
+                                    :alt="product.name" 
+                                    class="absolute inset-0 w-full h-full object-cover"
+                                    @error="(e) => e.target.style.display = 'none'"
+                                >
                             </div>
                             
                             <!-- Info -->

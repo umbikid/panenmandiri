@@ -13,6 +13,20 @@ use Illuminate\Http\Request;
 Route::get('/', [CatalogController::class, 'index'])->name('catalog.index');
 Route::get('/produk/{id}', [CatalogController::class, 'show'])->name('catalog.show');
 
+// Storage fallback route for environments where symlink is missing or unsupported
+Route::get('/storage/{path}', function ($path) {
+    $normalizedPath = str_replace(['..', '\\'], ['', '/'], $path);
+    $filePath = storage_path('app/public/' . $normalizedPath);
+    $realPath = realpath($filePath);
+    $baseStorage = realpath(storage_path('app/public'));
+
+    if (!$realPath || !$baseStorage || !str_starts_with($realPath, $baseStorage) || !file_exists($realPath)) {
+        abort(404);
+    }
+
+    return response()->file($realPath);
+})->where('path', '.*');
+
 Route::get('/api/districts/search', function (Request $request) {
     // ... old search logic, but we can keep or remove it
 })->name('api.districts.search');
