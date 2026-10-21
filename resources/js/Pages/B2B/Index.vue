@@ -23,6 +23,38 @@ const formatRupiah = (num) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
 };
 
+// Format harga ringkas maksimal 3 digit (contoh: 15 juta, 5,1 juta, 13,5 ribu)
+const formatCompactPrice = (num) => {
+    if (!num || num <= 0) return null;
+    let value = Number(num);
+    let unit = '';
+    let scaled = value;
+
+    if (value >= 1_000_000_000) {
+        scaled = value / 1_000_000_000;
+        unit = 'miliar';
+    } else if (value >= 1_000_000) {
+        scaled = value / 1_000_000;
+        unit = 'juta';
+    } else if (value >= 1_000) {
+        scaled = value / 1_000;
+        unit = 'ribu';
+    }
+
+    let formattedNumber;
+    if (scaled >= 100) {
+        formattedNumber = Math.round(scaled).toString();
+    } else if (scaled >= 10) {
+        let rounded = Math.round(scaled * 10) / 10;
+        formattedNumber = rounded.toLocaleString('id-ID', { maximumFractionDigits: 1 });
+    } else {
+        let rounded = Math.round(scaled * 100) / 100;
+        formattedNumber = rounded.toLocaleString('id-ID', { maximumFractionDigits: 2 });
+    }
+
+    return unit ? `${formattedNumber} ${unit}` : formattedNumber;
+};
+
 // Tab aktif untuk rincian stok: 'all', 'rice', 'livestock'
 const activeTab = ref('all');
 
@@ -506,7 +538,7 @@ const scrollToStock = () => {
                                         <td class="px-6 py-4 whitespace-nowrap text-right">
                                             <template v-if="sub.min_price">
                                                 <div class="font-extrabold text-emerald-800 text-sm">
-                                                    Mulai Rp. {{ formatNumber(sub.min_price) }}
+                                                    Mulai Rp. {{ formatCompactPrice(sub.min_price) }}
                                                     <span class="text-xs font-semibold text-gray-500">/ {{ category.type === 'rice' ? 'kg' : 'ekor' }}</span>
                                                 </div>
                                                 <span class="text-[10px] text-gray-400 italic block mt-0.5">
@@ -581,7 +613,7 @@ const scrollToStock = () => {
                                             <span class="text-[10px] text-gray-400 block uppercase font-medium">Harga Terendah</span>
                                             <div class="text-sm font-extrabold text-emerald-800">
                                                 <template v-if="sub.min_price">
-                                                    Mulai Rp. {{ formatNumber(sub.min_price) }}
+                                                    Mulai Rp. {{ formatCompactPrice(sub.min_price) }}
                                                     <span class="text-xs font-semibold text-gray-500">/ {{ category.type === 'rice' ? 'kg' : 'ekor' }}</span>
                                                 </template>
                                                 <template v-else>
