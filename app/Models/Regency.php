@@ -9,4 +9,9 @@ class Regency extends Model
     protected $guarded = ['id'];
     
     public function province() { return $this->belongsTo(Province::class); }
+
+    public function productCoverages()
+    {
+        return $this->hasMany(ProductCoverage::class);
+    }
 }

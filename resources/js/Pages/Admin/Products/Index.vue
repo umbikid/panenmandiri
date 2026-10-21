@@ -148,9 +148,9 @@ const changeStatus = (product, newStatus) => {
                         <select
                             v-model="selectedRegency"
                             @change="filter"
-                            class="text-xs rounded-lg border-gray-300 focus:border-emerald-600 focus:ring-emerald-600 max-w-[160px]"
+                            class="text-xs rounded-lg border-gray-300 focus:border-emerald-600 focus:ring-emerald-600 max-w-[200px]"
                         >
-                            <option value="">Semua Jangkauan</option>
+                            <option value="">Semua Lokasi Jangkauan</option>
                             <option v-for="r in regencies" :key="r.id" :value="r.id">{{ r.name }}</option>
                         </select>
 

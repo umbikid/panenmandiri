@@ -47,8 +47,13 @@ class ProductController extends Controller
 
         $products = $query->latest()->paginate(10)->withQueryString();
         $categories = Category::all(['id', 'name', 'type']);
-        $partners = User::role('mitra')->orderBy('name')->get(['id', 'name']);
-        $regencies = Regency::orderBy('name')->get(['id', 'name']);
+        $partners = User::whereHas('products')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $regencies = Regency::whereHas('productCoverages')
+            ->orderBy('name')
+            ->get(['id', 'name']);
 
         return Inertia::render('Admin/Products/Index', [
             'products' => $products,
