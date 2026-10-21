@@ -97,7 +97,7 @@ const scrollToStock = () => {
 
                     <!-- Persuasive Subheadline -->
                     <p class="text-base sm:text-lg lg:text-xl text-emerald-100/90 leading-relaxed font-normal">
-                        Koperasi Mitra Mandiri (KMM) menghubungkan langsung jaringan penggilingan padi dan peternak binaan dengan mitra korporasi: <strong>HOREKA, Supermarket, Perusahaan BUMN/Swasta, Distributor, serta Panitia Qurban</strong>. Jaminan kontinuitas pasokan, standar uji mutu ketat, dan legalitas kontrak resmi.
+                        Karya Masyarakat Mandiri (KMM) menghubungkan langsung jaringan penggilingan padi dan peternak binaan dengan mitra: <strong>HOREKA, Supermarket, Perusahaan BUMN/Swasta, Distributor, serta Panitia Qurban</strong>. Jaminan kontinuitas pasokan, standar uji mutu ketat, dan legalitas kontrak resmi.
                     </p>
 
                     <!-- Real-Time Metrics Highlights -->
@@ -254,7 +254,7 @@ const scrollToStock = () => {
                         Keunggulan Kompetitif
                     </span>
                     <h2 class="text-2xl sm:text-4xl font-extrabold text-white mt-3 tracking-tight">
-                        Mengapa Korporasi Memilih Koperasi Mitra Mandiri (KMM)?
+                        Mengapa Korporasi Memilih Karya Masyarakat Mandiri (KMM)?
                     </h2>
                     <p class="text-sm sm:text-base text-emerald-200 mt-2">
                         Efisiensi rantai pasok agribisnis kami memberikan keuntungan nyata pada performa dan anggaran perusahaan Anda.
@@ -384,11 +384,29 @@ const scrollToStock = () => {
                         <div class="px-6 py-4 bg-gradient-to-r from-emerald-900 to-green-900 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div class="flex items-center gap-3">
                                 <div class="p-2 bg-emerald-800/80 rounded-xl text-amber-400 border border-emerald-700/60">
-                                    <svg v-if="category.type === 'rice'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                    <!-- Ikon Padi untuk Rice -->
+                                    <svg v-if="category.type === 'rice'" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M2 22 16 8"/>
+                                        <path d="M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" fill="currentColor" fill-opacity="0.25"/>
+                                        <path d="M7.47 8.53 9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" fill="currentColor" fill-opacity="0.25"/>
+                                        <path d="M11.47 4.53 13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" fill="currentColor" fill-opacity="0.25"/>
+                                        <path d="M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4Z" fill="currentColor" fill-opacity="0.25"/>
+                                        <path d="M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" fill="currentColor" fill-opacity="0.25"/>
+                                        <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" fill="currentColor" fill-opacity="0.25"/>
+                                        <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" fill="currentColor" fill-opacity="0.25"/>
                                     </svg>
-                                    <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <!-- Ikon Sapi untuk Ternak -->
+                                    <svg v-else class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5.5 7.5C4.2 5.5 3 4 1.5 3c.5 3 1.5 5 3 6" />
+                                        <path d="M18.5 7.5c1.3-2 2.5-3.5 4-4.5-.5 3-1.5 5-3 6" />
+                                        <path d="M4.5 9.5C2.5 9.5 1 10.5 1.5 12c.5 1.5 2.5 1 3.5 0" />
+                                        <path d="M19.5 9.5c2 0 3.5 1 3 2.5-.5 1.5-2.5 1-3.5 0" />
+                                        <path d="M7 7h10c1.66 0 3 1.34 3 3v3.5c0 2.5-2 4.5-4.5 4.5h-7C6 18 4 16 4 13.5V10c0-1.66 1.34-3 3-3z" />
+                                        <rect x="7" y="13" width="10" height="7" rx="3.5" fill="currentColor" fill-opacity="0.2" />
+                                        <circle cx="9.5" cy="16.5" r="0.9" fill="currentColor" />
+                                        <circle cx="14.5" cy="16.5" r="0.9" fill="currentColor" />
+                                        <circle cx="8.5" cy="10.5" r="1" fill="currentColor" />
+                                        <circle cx="15.5" cy="10.5" r="1" fill="currentColor" />
                                     </svg>
                                 </div>
                                 <div>

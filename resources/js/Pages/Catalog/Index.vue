@@ -101,35 +101,19 @@ watch([searchCategory, searchRegency], () => {
 
     <PublicLayout>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <!-- Header Judul Katalog & Menu B2B Banner -->
+            <!-- Header Judul Katalog -->
             <div class="mb-6">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div>
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold mb-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-                            Koperasi Mitra Mandiri (KMM)
-                        </div>
-                        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-                            Katalog Produk KMM
-                        </h1>
-                        <p class="text-sm text-gray-600 mt-1">
-                            Pasokan hasil panen pangan dan hewan ternak segar langsung dari petani & peternak terpercaya.
-                        </p>
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold mb-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                        Karya Masyarakat Mandiri (KMM)
                     </div>
-
-                    <!-- Shortcut B2B Landing Page -->
-                    <Link
-                        :href="route('b2b.index')"
-                        class="inline-flex items-center justify-between sm:justify-center gap-3 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-emerald-950 font-bold text-sm shadow-sm hover:shadow-md transition group border border-amber-300/80"
-                    >
-                        <div class="flex items-center gap-2">
-                            <span class="bg-emerald-950 text-amber-300 text-[10px] px-2 py-0.5 rounded font-black tracking-wider uppercase">B2B</span>
-                            <span>Layanan Pengadaan & Grosir</span>
-                        </div>
-                        <svg class="w-4 h-4 text-emerald-950 group-hover:translate-x-1 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                    </Link>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+                        Katalog Produk KMM
+                    </h1>
+                    <p class="text-sm text-gray-600 mt-1">
+                        Pasokan hasil panen pangan dan hewan ternak segar langsung dari petani & peternak terpercaya.
+                    </p>
                 </div>
 
                 <!-- Blok Total Stok Hasil Panen dan Ternak -->
@@ -182,9 +166,16 @@ watch([searchCategory, searchRegency], () => {
                                     </p>
                                 </div>
                                 <div class="p-3 bg-amber-400/20 text-amber-400 rounded-xl group-hover:scale-105 transition-transform shrink-0 border border-amber-400/30">
-                                    <!-- Icon Karung Padi / Beras -->
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                    <!-- Ikon Padi (Wheat / Rice Sheaf) -->
+                                    <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M2 22 16 8"/>
+                                        <path d="M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" fill="currentColor" fill-opacity="0.25"/>
+                                        <path d="M7.47 8.53 9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" fill="currentColor" fill-opacity="0.25"/>
+                                        <path d="M11.47 4.53 13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" fill="currentColor" fill-opacity="0.25"/>
+                                        <path d="M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4Z" fill="currentColor" fill-opacity="0.25"/>
+                                        <path d="M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" fill="currentColor" fill-opacity="0.25"/>
+                                        <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" fill="currentColor" fill-opacity="0.25"/>
+                                        <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" fill="currentColor" fill-opacity="0.25"/>
                                     </svg>
                                 </div>
                             </div>
@@ -207,9 +198,18 @@ watch([searchCategory, searchRegency], () => {
                                     </p>
                                 </div>
                                 <div class="p-3 bg-emerald-400/20 text-emerald-300 rounded-xl group-hover:scale-105 transition-transform shrink-0 border border-emerald-400/30">
-                                    <!-- Icon Hewan Ternak -->
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <!-- Ikon Sapi (Cow Head) -->
+                                    <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5.5 7.5C4.2 5.5 3 4 1.5 3c.5 3 1.5 5 3 6" />
+                                        <path d="M18.5 7.5c1.3-2 2.5-3.5 4-4.5-.5 3-1.5 5-3 6" />
+                                        <path d="M4.5 9.5C2.5 9.5 1 10.5 1.5 12c.5 1.5 2.5 1 3.5 0" />
+                                        <path d="M19.5 9.5c2 0 3.5 1 3 2.5-.5 1.5-2.5 1-3.5 0" />
+                                        <path d="M7 7h10c1.66 0 3 1.34 3 3v3.5c0 2.5-2 4.5-4.5 4.5h-7C6 18 4 16 4 13.5V10c0-1.66 1.34-3 3-3z" />
+                                        <rect x="7" y="13" width="10" height="7" rx="3.5" fill="currentColor" fill-opacity="0.2" />
+                                        <circle cx="9.5" cy="16.5" r="0.9" fill="currentColor" />
+                                        <circle cx="14.5" cy="16.5" r="0.9" fill="currentColor" />
+                                        <circle cx="8.5" cy="10.5" r="1" fill="currentColor" />
+                                        <circle cx="15.5" cy="10.5" r="1" fill="currentColor" />
                                     </svg>
                                 </div>
                             </div>
