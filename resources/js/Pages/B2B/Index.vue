@@ -438,7 +438,7 @@ const scrollToStock = () => {
                                         <th class="px-6 py-3.5">Karakteristik & Mutu</th>
                                         <th class="px-6 py-3.5 text-center">Spesifikasi Bobot</th>
                                         <th class="px-6 py-3.5 text-center">Ketersediaan Stok</th>
-                                        <th class="px-6 py-3.5 text-right">Indikasi Harga</th>
+                                        <th class="px-6 py-3.5 text-right">Harga Mulai (Terendah)</th>
                                         <th class="px-6 py-3.5 text-center">Aksi B2B</th>
                                     </tr>
                                 </thead>
@@ -502,21 +502,19 @@ const scrollToStock = () => {
                                             </div>
                                         </td>
 
-                                        <!-- Indikasi Harga -->
+                                        <!-- Harga Mulai / Terendah -->
                                         <td class="px-6 py-4 whitespace-nowrap text-right">
                                             <template v-if="sub.min_price">
-                                                <div class="font-extrabold text-emerald-800">
-                                                    {{ formatRupiah(sub.min_price) }}
-                                                </div>
-                                                <div v-if="sub.max_price && sub.max_price !== sub.min_price" class="text-[11px] text-gray-400">
-                                                    s/d {{ formatRupiah(sub.max_price) }}
+                                                <div class="font-extrabold text-emerald-800 text-sm">
+                                                    Mulai Rp. {{ formatNumber(sub.min_price) }}
+                                                    <span class="text-xs font-semibold text-gray-500">/ {{ category.type === 'rice' ? 'kg' : 'ekor' }}</span>
                                                 </div>
                                                 <span class="text-[10px] text-gray-400 italic block mt-0.5">
-                                                    *Nego partai besar
+                                                    *Harga terendah produk aktif
                                                 </span>
                                             </template>
                                             <template v-else>
-                                                <span class="text-xs text-gray-500 italic font-medium">
+                                                <span class="text-xs text-gray-400 italic font-medium">
                                                     Hubungi CS
                                                 </span>
                                             </template>
@@ -580,10 +578,16 @@ const scrollToStock = () => {
 
                                     <div class="flex items-center justify-between pt-2 border-t border-gray-100">
                                         <div>
-                                            <span class="text-[10px] text-gray-400 block uppercase">Indikasi Harga</span>
-                                            <span class="text-sm font-extrabold text-emerald-800">
-                                                {{ sub.min_price ? formatRupiah(sub.min_price) : 'Nego B2B' }}
-                                            </span>
+                                            <span class="text-[10px] text-gray-400 block uppercase font-medium">Harga Terendah</span>
+                                            <div class="text-sm font-extrabold text-emerald-800">
+                                                <template v-if="sub.min_price">
+                                                    Mulai Rp. {{ formatNumber(sub.min_price) }}
+                                                    <span class="text-xs font-semibold text-gray-500">/ {{ category.type === 'rice' ? 'kg' : 'ekor' }}</span>
+                                                </template>
+                                                <template v-else>
+                                                    <span class="text-xs text-gray-400 italic font-medium">Hubungi CS</span>
+                                                </template>
+                                            </div>
                                         </div>
                                         <a
                                             :href="makeSubcategoryWaUrl(category, sub)"
