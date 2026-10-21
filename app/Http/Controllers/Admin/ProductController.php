@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Regency;
+use App\Models\User;
 use App\Services\ExportHelper;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -29,19 +31,35 @@ class ProductController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
+        if ($request->filled('partner_id')) {
+            $query->where('partner_id', $request->partner_id);
+        }
+
+        if ($request->filled('regency_id')) {
+            $query->whereHas('coverages', function ($qc) use ($request) {
+                $qc->where('regency_id', $request->regency_id);
+            });
+        }
+
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
         $products = $query->latest()->paginate(10)->withQueryString();
         $categories = Category::all(['id', 'name', 'type']);
+        $partners = User::role('mitra')->orderBy('name')->get(['id', 'name']);
+        $regencies = Regency::orderBy('name')->get(['id', 'name']);
 
         return Inertia::render('Admin/Products/Index', [
             'products' => $products,
             'categories' => $categories,
+            'partners' => $partners,
+            'regencies' => $regencies,
             'filters' => [
                 'q' => $request->q,
                 'category_id' => $request->category_id,
+                'partner_id' => $request->partner_id,
+                'regency_id' => $request->regency_id,
                 'status' => $request->status,
             ],
         ]);
@@ -91,6 +109,16 @@ class ProductController extends Controller
 
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->filled('partner_id')) {
+            $query->where('partner_id', $request->partner_id);
+        }
+
+        if ($request->filled('regency_id')) {
+            $query->whereHas('coverages', function ($qc) use ($request) {
+                $qc->where('regency_id', $request->regency_id);
+            });
         }
 
         if ($request->filled('status')) {
@@ -181,6 +209,14 @@ class ProductController extends Controller
             $cat = Category::find($request->category_id);
             if ($cat) $filterParts[] = 'Kategori: ' . $cat->name;
         }
+        if ($request->filled('partner_id')) {
+            $partner = User::find($request->partner_id);
+            if ($partner) $filterParts[] = 'Mitra: ' . $partner->name;
+        }
+        if ($request->filled('regency_id')) {
+            $regency = Regency::find($request->regency_id);
+            if ($regency) $filterParts[] = 'Jangkauan: ' . $regency->name;
+        }
         if ($request->filled('status')) $filterParts[] = 'Status: ' . ($statusLabels[$request->status] ?? $request->status);
         $filterText = !empty($filterParts) ? implode(' &bull; ', $filterParts) : 'Semua Produk';
 
@@ -195,17 +231,17 @@ class ProductController extends Controller
             );
         }
 
-        // Excel / CSV Export
-        $filename = 'Laporan_Produk_Harga_' . date('Y-m-d_His') . '.csv';
-        $csvHeaders = [
+        // Excel (.xls) Export
+        $filename = 'Laporan_Produk_Harga_' . date('Y-m-d_His') . '.xls';
+        $xlsHeaders = [
             'No', 'Nama Produk', 'Kategori & Subkategori', 'Mitra Produsen', 'No HP Mitra',
             'Harga Mitra (Rp)', 'Harga Jual Admin (Rp)', 'Margin (Rp)', 'Stok', 'Satuan',
             'Jangkauan Wilayah', 'Status Produk'
         ];
 
-        $csvRows = [];
+        $xlsRows = [];
         foreach ($rows as $row) {
-            $csvRows[] = [
+            $xlsRows[] = [
                 $row['no'],
                 $row['name'],
                 $row['raw_category'],
@@ -221,10 +257,10 @@ class ProductController extends Controller
             ];
         }
 
-        $csvRows[] = [
+        $summaryXls = [
             '', 'TOTAL KESELURUHAN', count($products) . ' Produk', '', '', '', '', '', $totalStock, 'Unit', '', ''
         ];
 
-        return ExportHelper::downloadCsv($filename, $csvHeaders, $csvRows);
+        return ExportHelper::downloadXls($filename, 'Laporan Produk & Penetapan Harga Jual', $xlsHeaders, $xlsRows, $summaryXls);
     }
 }

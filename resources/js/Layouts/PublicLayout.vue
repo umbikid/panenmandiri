@@ -26,6 +26,25 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 
                     <div class="hidden md:flex md:items-center md:ms-6 space-x-3">
                         <template v-if="$page.props.auth.user">
+                            <!-- Keranjang Pembeli (Desktop) -->
+                            <Link
+                                v-if="$page.props.auth.user.roles.includes('pembeli')"
+                                :href="route('cart.index')"
+                                class="relative text-sm px-3.5 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5"
+                                :class="route().current('cart.*') ? 'bg-emerald-900/80 text-amber-300 border border-amber-400/60 font-bold shadow-sm' : 'text-emerald-100 hover:text-amber-300 hover:bg-emerald-700/50'"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                                <span>Keranjang</span>
+                                <span
+                                    v-if="$page.props.auth.cart_count > 0"
+                                    class="bg-amber-400 text-emerald-950 font-black text-[10px] px-1.5 py-0.2 rounded-full shadow-xs"
+                                >
+                                    {{ $page.props.auth.cart_count }}
+                                </span>
+                            </Link>
+
                             <Link
                                 v-if="$page.props.auth.user.roles.includes('pembeli')"
                                 :href="route('buyer.orders.index')"
@@ -65,6 +84,27 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
             <Link :href="route('catalog.index')" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-green-800" :class="{ 'text-green-800': route().current('catalog.index') }">
                 <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 <span class="text-[10px] font-medium">Beranda</span>
+            </Link>
+
+            <!-- Keranjang Mobile -->
+            <Link
+                v-if="$page.props.auth.user && $page.props.auth.user.roles.includes('pembeli')"
+                :href="route('cart.index')"
+                class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-green-800 relative"
+                :class="{ 'text-green-800 font-bold': route().current('cart.*') }"
+            >
+                <div class="relative">
+                    <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <span
+                        v-if="$page.props.auth.cart_count > 0"
+                        class="absolute -top-1 -right-2 bg-red-600 text-white font-bold text-[9px] w-4 h-4 rounded-full flex items-center justify-center shadow-xs"
+                    >
+                        {{ $page.props.auth.cart_count }}
+                    </span>
+                </div>
+                <span class="text-[10px] font-medium">Keranjang</span>
             </Link>
             
             <Link v-if="$page.props.auth.user && $page.props.auth.user.roles.includes('pembeli')" :href="route('buyer.orders.index')" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-green-800" :class="{ 'text-green-800': route().current('buyer.orders.index') }">

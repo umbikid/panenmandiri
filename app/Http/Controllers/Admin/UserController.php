@@ -257,16 +257,16 @@ class UserController extends Controller
             );
         }
 
-        // Excel / CSV Export
-        $filename = 'Laporan_Pengguna_' . date('Y-m-d_His') . '.csv';
-        $csvHeaders = [
+        // Excel (.xls) Export
+        $filename = 'Laporan_Pengguna_' . date('Y-m-d_His') . '.xls';
+        $xlsHeaders = [
             'No', 'Nama Pengguna', 'Peran (Role)', 'Email', 'No WhatsApp',
             'Wilayah (Kecamatan, Kota/Kab, Provinsi)', 'Alamat Lengkap', 'Status Akun', 'Tanggal Terdaftar'
         ];
 
-        $csvRows = [];
+        $xlsRows = [];
         foreach ($rows as $row) {
-            $csvRows[] = [
+            $xlsRows[] = [
                 $row['no'],
                 $row['name'],
                 $row['raw_role'],
@@ -279,10 +279,10 @@ class UserController extends Controller
             ];
         }
 
-        $csvRows[] = [
+        $summaryXls = [
             '', 'TOTAL KESELURUHAN', count($users) . ' Pengguna Terdaftar', '', '', '', '', '', ''
         ];
 
-        return ExportHelper::downloadCsv($filename, $csvHeaders, $csvRows);
+        return ExportHelper::downloadXls($filename, 'Laporan Data Manajemen Pengguna', $xlsHeaders, $xlsRows, $summaryXls);
     }
 }

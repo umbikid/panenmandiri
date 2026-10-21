@@ -6,17 +6,23 @@ import { ref } from 'vue';
 const props = defineProps({
     products: Object,
     categories: Array,
+    partners: Array,
+    regencies: Array,
     filters: Object,
 });
 
 const searchQuery = ref(props.filters.q || '');
 const selectedCategory = ref(props.filters.category_id || '');
+const selectedPartner = ref(props.filters.partner_id || '');
+const selectedRegency = ref(props.filters.regency_id || '');
 const selectedStatus = ref(props.filters.status || '');
 
 const filter = () => {
     router.get(route('admin.products.index'), {
         q: searchQuery.value,
         category_id: selectedCategory.value,
+        partner_id: selectedPartner.value,
+        regency_id: selectedRegency.value,
         status: selectedStatus.value,
     }, {
         preserveState: true,
@@ -28,6 +34,8 @@ const exportUrl = (format) => {
     const params = new URLSearchParams();
     if (searchQuery.value) params.append('q', searchQuery.value);
     if (selectedCategory.value) params.append('category_id', selectedCategory.value);
+    if (selectedPartner.value) params.append('partner_id', selectedPartner.value);
+    if (selectedRegency.value) params.append('regency_id', selectedRegency.value);
     if (selectedStatus.value) params.append('status', selectedStatus.value);
     params.append('format', format);
     if (format === 'pdf') params.append('auto_print', '1');
@@ -95,7 +103,7 @@ const changeStatus = (product, newStatus) => {
                         <svg class="w-4 h-4 mr-1.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        Ekspor Excel
+                        Ekspor Excel (.xls)
                     </a>
                     <a
                         :href="exportUrl('pdf')"
@@ -125,7 +133,28 @@ const changeStatus = (product, newStatus) => {
                             class="w-full text-xs rounded-lg border-gray-300 focus:border-emerald-600 focus:ring-emerald-600"
                         />
                     </div>
-                    <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+                        <!-- Filter Mitra -->
+                        <select
+                            v-model="selectedPartner"
+                            @change="filter"
+                            class="text-xs rounded-lg border-gray-300 focus:border-emerald-600 focus:ring-emerald-600 max-w-[150px]"
+                        >
+                            <option value="">Semua Mitra</option>
+                            <option v-for="p in partners" :key="p.id" :value="p.id">{{ p.name }}</option>
+                        </select>
+
+                        <!-- Filter Lokasi Jangkauan -->
+                        <select
+                            v-model="selectedRegency"
+                            @change="filter"
+                            class="text-xs rounded-lg border-gray-300 focus:border-emerald-600 focus:ring-emerald-600 max-w-[160px]"
+                        >
+                            <option value="">Semua Jangkauan</option>
+                            <option v-for="r in regencies" :key="r.id" :value="r.id">{{ r.name }}</option>
+                        </select>
+
+                        <!-- Filter Kategori -->
                         <select
                             v-model="selectedCategory"
                             @change="filter"
@@ -135,6 +164,7 @@ const changeStatus = (product, newStatus) => {
                             <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
                         </select>
 
+                        <!-- Filter Status -->
                         <select
                             v-model="selectedStatus"
                             @change="filter"
@@ -148,9 +178,9 @@ const changeStatus = (product, newStatus) => {
 
                         <button
                             @click="filter"
-                            class="px-4 py-2 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-semibold rounded-lg shadow-sm transition"
+                            class="px-3.5 py-2 bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-semibold rounded-lg shadow-sm transition cursor-pointer"
                         >
-                            Terapkan
+                            Cari
                         </button>
                     </div>
                 </div>

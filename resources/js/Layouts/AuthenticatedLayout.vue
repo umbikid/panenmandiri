@@ -107,6 +107,21 @@ const showingNavigationDropdown = ref(false);
                                 >
                                     Katalog Publik
                                 </NavLink>
+
+                                <NavLink
+                                    v-if="$page.props.auth.user.roles.includes('pembeli')"
+                                    :href="route('cart.index')"
+                                    :active="route().current('cart.*')"
+                                    class="relative"
+                                >
+                                    <span>Keranjang</span>
+                                    <span
+                                        v-if="$page.props.auth.cart_count > 0"
+                                        class="ml-1.5 bg-amber-400 text-emerald-950 font-black text-[10px] px-1.5 py-0.5 rounded-full"
+                                    >
+                                        {{ $page.props.auth.cart_count }}
+                                    </span>
+                                </NavLink>
                             </div>
                         </div>
 
@@ -247,6 +262,14 @@ const showingNavigationDropdown = ref(false);
 
                         <ResponsiveNavLink :href="route('catalog.index')" :active="route().current('catalog.*')">
                             Katalog Publik
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            v-if="$page.props.auth.user.roles.includes('pembeli')"
+                            :href="route('cart.index')"
+                            :active="route().current('cart.*')"
+                        >
+                            Keranjang Belanja ({{ $page.props.auth.cart_count || 0 }})
                         </ResponsiveNavLink>
                     </div>
 

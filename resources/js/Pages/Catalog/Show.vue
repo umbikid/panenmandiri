@@ -15,9 +15,24 @@ import { router } from '@inertiajs/vue3';
 
 const activePhotoIndex = ref(0);
 const photoErrors = ref({});
+const selectedQty = ref(1);
+const addingToCart = ref(false);
 
 const handlePhotoError = (index) => {
     photoErrors.value[index] = true;
+};
+
+const addToCart = () => {
+    addingToCart.value = true;
+    router.post(route('cart.store'), {
+        product_id: props.product.id,
+        qty: selectedQty.value,
+    }, {
+        preserveScroll: true,
+        onFinish: () => {
+            addingToCart.value = false;
+        },
+    });
 };
 
 const buy = () => {
@@ -92,15 +107,6 @@ const buy = () => {
                         
                     </div>
 
-                    <div class="mb-6">
-                        <h3 class="text-sm font-bold text-gray-800 mb-2">Jangkauan Pengiriman:</h3>
-                        <div class="flex flex-wrap gap-2">
-                            <span v-for="cov in product.coverages" :key="cov.id" class="px-2 py-1 bg-green-50 text-green-800 text-xs rounded border border-green-100">
-                                {{ cov.regency?.name }}
-                            </span>
-                        </div>
-                    </div>
-
                     <!-- Deskripsi Produk -->
                     <div class="mb-6">
                         <h3 class="text-sm font-bold text-gray-800 mb-2">Deskripsi Produk:</h3>
@@ -112,10 +118,72 @@ const buy = () => {
                         </p>
                     </div>
 
-                    <div class="mt-auto pt-6 border-t border-gray-100">
-                        <button @click="buy" class="w-full bg-green-800 text-white font-bold text-lg py-3 rounded-lg hover:bg-green-900 transition shadow-sm flex justify-center items-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                            Pesan Sekarang
+                    <!-- Jangkauan Pengiriman -->
+                    <div class="mb-6">
+                        <h3 class="text-sm font-bold text-gray-800 mb-2">Jangkauan Pengiriman:</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span v-for="cov in product.coverages" :key="cov.id" class="px-2 py-1 bg-green-50 text-green-800 text-xs rounded border border-green-100">
+                                {{ cov.regency?.name }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Pilihan Kuantitas -->
+                    <div class="mb-6 p-3.5 bg-gray-50/90 rounded-xl border border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-gray-700">Jumlah Pesanan:</span>
+                            <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-white shadow-2xs">
+                                <button
+                                    type="button"
+                                    @click="selectedQty > 1 ? selectedQty-- : null"
+                                    :disabled="selectedQty <= 1"
+                                    class="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 disabled:opacity-40 font-bold transition cursor-pointer"
+                                >
+                                    &minus;
+                                </button>
+                                <input
+                                    type="number"
+                                    v-model.number="selectedQty"
+                                    min="1"
+                                    :max="product.stock"
+                                    class="w-14 h-8 border-0 text-center text-xs font-bold text-gray-900 focus:ring-0 p-0"
+                                />
+                                <button
+                                    type="button"
+                                    @click="selectedQty < product.stock ? selectedQty++ : null"
+                                    :disabled="selectedQty >= product.stock"
+                                    class="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 disabled:opacity-40 font-bold transition cursor-pointer"
+                                >
+                                    &plus;
+                                </button>
+                            </div>
+                        </div>
+                        <div class="text-right text-[10px] text-gray-500 mt-1">
+                            Tersedia: <strong>{{ product.stock }} {{ product.unit }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
+                        <button
+                            type="button"
+                            @click="addToCart"
+                            :disabled="addingToCart || product.stock <= 0"
+                            class="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-950 font-bold text-sm py-3 px-4 rounded-xl border-2 border-amber-400 transition shadow-2xs flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50"
+                        >
+                            <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                            <span>{{ addingToCart ? 'Menambahkan...' : '+ Keranjang' }}</span>
+                        </button>
+
+                        <button
+                            type="button"
+                            @click="buy"
+                            :disabled="product.stock <= 0"
+                            class="flex-1 bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-sm py-3 px-4 rounded-xl transition shadow-md flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50"
+                        >
+                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <span>Beli Langsung</span>
                         </button>
                     </div>
                 </div>

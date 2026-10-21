@@ -65,6 +65,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     
     // Kelola Kategori
     Route::resource('categories', AdminCategoryController::class)->except(['create', 'show', 'edit']);
+    Route::post('categories/{category}/subcategories', [AdminCategoryController::class, 'storeSubcategory'])->name('categories.subcategories.store');
+    Route::put('categories/{category}/subcategories/{subcategory}', [AdminCategoryController::class, 'updateSubcategory'])->name('categories.subcategories.update');
+    Route::delete('categories/{category}/subcategories/{subcategory}', [AdminCategoryController::class, 'destroySubcategory'])->name('categories.subcategories.destroy');
 
     // Kelola Produk & Harga Jual
     Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
@@ -90,9 +93,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 });
 
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CartController;
+
 Route::middleware(['auth', 'role:pembeli|admin'])->group(function () {
     Route::get('/checkout/{product}', [OrderController::class, 'create'])->name('checkout.create');
     Route::post('/checkout/{product}', [OrderController::class, 'store'])->name('checkout.store');
+    
+    // Keranjang Belanja Pembeli & Multi-checkout
+    Route::get('/keranjang', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/keranjang', [CartController::class, 'store'])->name('cart.store');
+    Route::patch('/keranjang/{cartItem}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/keranjang/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::post('/keranjang/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
     
     // Riwayat Pembelian Pembeli
     Route::get('/pembelian', [OrderController::class, 'index'])->name('buyer.orders.index');

@@ -239,16 +239,16 @@ class OrderController extends Controller
             );
         }
 
-        // Excel / CSV Export
-        $filename = 'Laporan_Transaksi_Pesanan_' . date('Y-m-d_His') . '.csv';
-        $csvHeaders = [
+        // Excel (.xls) Export
+        $filename = 'Laporan_Transaksi_Pesanan_' . date('Y-m-d_His') . '.xls';
+        $xlsHeaders = [
             'No', 'Kode Pesanan', 'Tanggal Pesanan', 'Nama Pembeli', 'No HP Pembeli',
             'Rincian Produk Dipesan', 'Mitra Produsen', 'Total Biaya (Rp)', 'Status Pesanan'
         ];
 
-        $csvRows = [];
+        $xlsRows = [];
         foreach ($rows as $row) {
-            $csvRows[] = [
+            $xlsRows[] = [
                 $row['no'],
                 $row['code'],
                 $row['date'],
@@ -261,10 +261,10 @@ class OrderController extends Controller
             ];
         }
 
-        $csvRows[] = [
+        $summaryXls = [
             '', 'TOTAL KESELURUHAN', '', '', '', count($orders) . ' Transaksi', '', $grandTotal, ''
         ];
 
-        return ExportHelper::downloadCsv($filename, $csvHeaders, $csvRows);
+        return ExportHelper::downloadXls($filename, 'Laporan Transaksi & Pesanan Masuk', $xlsHeaders, $xlsRows, $summaryXls);
     }
 }

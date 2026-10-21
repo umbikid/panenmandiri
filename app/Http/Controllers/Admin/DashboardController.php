@@ -219,30 +219,28 @@ class DashboardController extends Controller
             );
         }
 
-        // Excel / CSV
-        $filename = 'Laporan_Stok_' . ucfirst($type) . '_' . date('Y-m-d_His') . '.csv';
-        $csvHeaders = array_map(fn($c) => $c['label'], $columns);
-        $csvRows = [];
+        // Excel (.xls)
+        $filename = 'Laporan_Stok_' . ucfirst($type) . '_' . date('Y-m-d_His') . '.xls';
+        $xlsHeaders = array_map(fn($c) => $c['label'], $columns);
+        $xlsRows = [];
 
         foreach ($rows as $row) {
-            $csvRow = [];
+            $xlsRow = [];
             foreach ($columns as $col) {
                 if ($col['key'] === 'status') {
-                    $csvRow[] = $row['raw_status'] ?? 'Kosong';
+                    $xlsRow[] = $row['raw_status'] ?? 'Kosong';
                 } else {
-                    $csvRow[] = $row[$col['key']] ?? '';
+                    $xlsRow[] = $row[$col['key']] ?? '';
                 }
             }
-            $csvRows[] = $csvRow;
+            $xlsRows[] = $xlsRow;
         }
 
-        // Add summary row to CSV
-        $summaryCsv = [];
+        $summaryXls = [];
         foreach ($columns as $col) {
-            $summaryCsv[] = $summaryRow[$col['key']] ?? '';
+            $summaryXls[] = $summaryRow[$col['key']] ?? '';
         }
-        $csvRows[] = $summaryCsv;
 
-        return ExportHelper::downloadCsv($filename, $csvHeaders, $csvRows);
+        return ExportHelper::downloadXls($filename, $title, $xlsHeaders, $xlsRows, $summaryXls);
     }
 }

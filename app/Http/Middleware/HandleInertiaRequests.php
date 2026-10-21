@@ -43,6 +43,7 @@ class HandleInertiaRequests extends Middleware
                     'district_id' => $request->user()->district_id,
                     'roles' => $request->user()->getRoleNames(),
                 ] : null,
+                'cart_count' => $request->user() ? \App\Models\CartItem::where('user_id', $request->user()->id)->count() : 0,
             ],
             'flash' => [
                 'success' => $request->session()->get('success'),
