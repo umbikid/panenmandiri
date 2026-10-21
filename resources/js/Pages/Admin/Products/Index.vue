@@ -24,6 +24,16 @@ const filter = () => {
     });
 };
 
+const exportUrl = (format) => {
+    const params = new URLSearchParams();
+    if (searchQuery.value) params.append('q', searchQuery.value);
+    if (selectedCategory.value) params.append('category_id', selectedCategory.value);
+    if (selectedStatus.value) params.append('status', selectedStatus.value);
+    params.append('format', format);
+    if (format === 'pdf') params.append('auto_print', '1');
+    return route('admin.products.export') + '?' + params.toString();
+};
+
 const formatRupiah = (val) => {
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -75,6 +85,29 @@ const changeStatus = (product, newStatus) => {
                     <p class="text-xs text-gray-500 mt-1">
                         Atur harga jual ke pembeli (katalog publik), pantau stok, dan ubah status tayang produk mitra.
                     </p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a
+                        :href="exportUrl('excel')"
+                        class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 shadow-2xs transition"
+                        title="Unduh daftar produk & penetapan harga ke format Excel / CSV"
+                    >
+                        <svg class="w-4 h-4 mr-1.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Ekspor Excel
+                    </a>
+                    <a
+                        :href="exportUrl('pdf')"
+                        target="_blank"
+                        class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-50 text-red-800 hover:bg-red-100 border border-red-200 shadow-2xs transition"
+                        title="Cetak atau simpan laporan produk sebagai PDF"
+                    >
+                        <svg class="w-4 h-4 mr-1.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                        Cetak / PDF
+                    </a>
                 </div>
             </div>
         </template>

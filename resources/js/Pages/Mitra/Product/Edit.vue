@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, Link } from '@inertiajs/vue3';
+import { Head, useForm, Link, router } from '@inertiajs/vue3';
 import { ref, computed, watch } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -18,6 +18,7 @@ const props = defineProps({
 const form = useForm({
     _method: 'put',
     name: props.product.name,
+    description: props.product.description || '',
     category_id: props.product.category_id,
     subcategory_id: props.product.subcategory_id,
     stock: props.product.stock,
@@ -29,6 +30,28 @@ const form = useForm({
 
 const existingPhotos = ref(props.product.photos || []);
 const imagePreviews = ref([]);
+
+watch(() => props.product.photos, (val) => {
+    existingPhotos.value = val || [];
+}, { deep: true });
+
+const deleteExistingPhoto = (photo) => {
+    if (existingPhotos.value.length === 1 && form.photos.length === 0) {
+        alert('Produk harus memiliki minimal 1 foto.');
+        return;
+    }
+    if (!confirm('Apakah Anda yakin ingin menghapus foto produk ini?')) return;
+    router.delete(route('mitra.products.photos.destroy', [props.product.id, photo.id]), {
+        preserveScroll: true,
+    });
+};
+
+const setPrimaryPhoto = (photo) => {
+    if (photo.is_primary) return;
+    router.post(route('mitra.products.photos.primary', [props.product.id, photo.id]), {}, {
+        preserveScroll: true,
+    });
+};
 
 const handleFileChange = async (event) => {
     const files = Array.from(event.target.files);
@@ -68,9 +91,6 @@ const removeNewPhoto = (index) => {
     form.photos.splice(index, 1);
     imagePreviews.value.splice(index, 1);
 };
-
-// Functionality to delete existing photo via API could go here
-// For now we just let them add up to 5 photos
 
 const activeCategory = computed(() => {
     return props.categories.find(c => c.id === form.category_id);
@@ -143,30 +163,72 @@ const submit = () => {
                             <InputError class="mt-2" :message="form.errors.name" />
                         </div>
 
+                        <!-- Deskripsi Produk -->
+                        <div>
+                            <InputLabel for="description" value="Deskripsi Produk" />
+                            <textarea
+                                id="description"
+                                rows="4"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 text-sm"
+                                v-model="form.description"
+                                placeholder="Jelaskan detail spesifikasi produk, kondisi, mutu/kualitas, pakan (untuk ternak), atau catatan penting lainnya..."
+                            ></textarea>
+                            <InputError class="mt-2" :message="form.errors.description" />
+                        </div>
+
                         <!-- Foto Produk -->
                         <div>
                             <InputLabel value="Foto Produk (Wajib 1, Maks 5)" />
-                            <p class="text-xs text-gray-500 mb-2">Tambah foto baru. Gambar otomatis dikompres sebelum diunggah.</p>
+                            <p class="text-xs text-gray-500 mb-2">
+                                Foto utama akan ditampilkan di katalog depan. Klik <strong>Jadikan Utama</strong> untuk mengubah, atau ikon <strong>&times;</strong> untuk menghapus foto yang sudah diunggah.
+                            </p>
                             
                             <div class="flex flex-wrap gap-4 mt-2">
-                                <!-- Existing Photos (Readonly for now) -->
-                                <div v-for="(photo, index) in existingPhotos" :key="'ex'+index" class="relative border border-gray-300 rounded p-1 w-24 h-24">
+                                <!-- Existing Photos (with delete & set primary actions) -->
+                                <div
+                                    v-for="(photo, index) in existingPhotos"
+                                    :key="'ex'+photo.id"
+                                    class="relative border rounded-lg p-1 w-28 h-28 bg-gray-50 shadow-xs flex flex-col justify-between overflow-hidden"
+                                    :class="photo.is_primary ? 'border-green-600 ring-2 ring-green-600/30' : 'border-gray-300'"
+                                >
                                     <img :src="'/storage/' + photo.path" class="w-full h-full object-cover rounded" />
-                                    <div v-if="photo.is_primary" class="absolute bottom-0 left-0 right-0 bg-green-700 text-white text-[10px] text-center bg-opacity-80 py-0.5 rounded-b">Utama</div>
+                                    
+                                    <!-- Delete Button -->
+                                    <button
+                                        type="button"
+                                        @click="deleteExistingPhoto(photo)"
+                                        class="absolute top-1.5 right-1.5 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow-md cursor-pointer transition"
+                                        title="Hapus foto ini"
+                                    >
+                                        &times;
+                                    </button>
+
+                                    <!-- Primary indicator or Set Primary button -->
+                                    <div v-if="photo.is_primary" class="absolute bottom-0 left-0 right-0 bg-green-700 text-white text-[10px] font-bold text-center py-1 bg-opacity-95 shadow">
+                                        Foto Utama
+                                    </div>
+                                    <button
+                                        v-else
+                                        type="button"
+                                        @click="setPrimaryPhoto(photo)"
+                                        class="absolute bottom-0 left-0 right-0 bg-gray-900/75 hover:bg-green-700 text-white text-[10px] font-semibold text-center py-1 transition cursor-pointer"
+                                    >
+                                        Jadikan Utama
+                                    </button>
                                 </div>
 
                                 <!-- New Photos Preview -->
-                                <div v-for="(preview, index) in imagePreviews" :key="'new'+index" class="relative border border-blue-300 rounded p-1 w-24 h-24">
+                                <div v-for="(preview, index) in imagePreviews" :key="'new'+index" class="relative border-2 border-dashed border-blue-400 rounded-lg p-1 w-28 h-28 bg-blue-50/30 overflow-hidden">
                                     <img :src="preview" class="w-full h-full object-cover rounded" />
-                                    <button type="button" @click="removeNewPhoto(index)" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold hover:bg-red-700">
+                                    <button type="button" @click="removeNewPhoto(index)" class="absolute top-1.5 right-1.5 bg-red-500 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow cursor-pointer">
                                         &times;
                                     </button>
-                                    <div class="absolute bottom-0 left-0 right-0 bg-blue-500 text-white text-[10px] text-center bg-opacity-80 py-0.5 rounded-b">Baru</div>
+                                    <div class="absolute bottom-0 left-0 right-0 bg-blue-600 text-white text-[10px] font-semibold text-center py-0.5">Baru</div>
                                 </div>
                                 
-                                <label v-if="(existingPhotos.length + form.photos.length) < 5" class="w-24 h-24 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center text-gray-500 hover:text-green-600 hover:border-green-600 cursor-pointer">
-                                    <span class="text-2xl">+</span>
-                                    <span class="text-xs">Tambah</span>
+                                <label v-if="(existingPhotos.length + form.photos.length) < 5" class="w-28 h-28 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-500 hover:text-green-600 hover:border-green-600 cursor-pointer bg-gray-50/50 hover:bg-green-50/30 transition">
+                                    <span class="text-2xl font-light">+</span>
+                                    <span class="text-xs font-medium">Tambah Foto</span>
                                     <input type="file" class="hidden" accept="image/jpeg, image/png, image/webp" multiple @change="handleFileChange" />
                                 </label>
                             </div>

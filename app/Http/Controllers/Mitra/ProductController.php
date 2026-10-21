@@ -8,6 +8,8 @@ use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Province;
+use App\Models\ProductPhoto;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -42,6 +44,7 @@ class ProductController extends Controller
 
         $validated = $request->validate([
             'name'           => ['required', 'string', 'max:200'],
+            'description'    => ['nullable', 'string', 'max:5000'],
             'category_id'    => ['required', 'integer', 'exists:categories,id'],
             'subcategory_id' => ['required', 'integer', 'exists:subcategories,id'],
             'stock'          => ['required', 'numeric', 'min:0', 'max:99999999'],
@@ -58,6 +61,7 @@ class ProductController extends Controller
             'category_id' => $validated['category_id'],
             'subcategory_id' => $validated['subcategory_id'],
             'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
             'partner_price' => $validated['price'],
             'selling_price' => $validated['price'], // admin can change this later
             'stock' => $validated['stock'],
@@ -113,6 +117,7 @@ class ProductController extends Controller
 
         $validated = $request->validate([
             'name'           => ['required', 'string', 'max:200'],
+            'description'    => ['nullable', 'string', 'max:5000'],
             'category_id'    => ['required', 'integer', 'exists:categories,id'],
             'subcategory_id' => ['required', 'integer', 'exists:subcategories,id'],
             'stock'          => ['required', 'numeric', 'min:0', 'max:99999999'],
@@ -128,6 +133,7 @@ class ProductController extends Controller
             'category_id' => $validated['category_id'],
             'subcategory_id' => $validated['subcategory_id'],
             'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
             'partner_price' => $validated['price'],
             'stock' => $validated['stock'],
             'unit' => $validated['unit'],
@@ -171,6 +177,40 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('mitra.products.index')->with('success', 'Produk berhasil dihapus.');
+    }
+
+    public function destroyPhoto(Request $request, Product $product, ProductPhoto $photo)
+    {
+        if ($product->partner_id !== $request->user()->id || $photo->product_id !== $product->id) {
+            abort(403);
+        }
+
+        $wasPrimary = (bool) $photo->is_primary;
+
+        Storage::disk('public')->delete($photo->path);
+        $photo->delete();
+
+        // Jika foto yang dihapus adalah foto utama, jadikan foto pertama yang tersisa sebagai utama
+        if ($wasPrimary) {
+            $nextPhoto = $product->photos()->first();
+            if ($nextPhoto) {
+                $nextPhoto->update(['is_primary' => true]);
+            }
+        }
+
+        return back()->with('success', 'Foto produk berhasil dihapus.');
+    }
+
+    public function setPrimaryPhoto(Request $request, Product $product, ProductPhoto $photo)
+    {
+        if ($product->partner_id !== $request->user()->id || $photo->product_id !== $product->id) {
+            abort(403);
+        }
+
+        $product->photos()->update(['is_primary' => false]);
+        $photo->update(['is_primary' => true]);
+
+        return back()->with('success', 'Foto utama berhasil diperbarui.');
     }
 }
 

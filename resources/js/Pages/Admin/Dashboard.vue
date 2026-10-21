@@ -363,6 +363,34 @@ const statusBadge = (status) => {
                     </button>
                 </div>
 
+                <!-- Export Toolbar -->
+                <div class="px-5 py-2.5 bg-gray-50/90 border-b border-gray-100 flex items-center justify-between text-xs">
+                    <span class="text-gray-600 font-medium text-[11px]">Ekspor Rincian Stok:</span>
+                    <div class="flex items-center gap-2">
+                        <a
+                            :href="route('admin.dashboard.export-stock', { type: activeStockModal, format: 'excel' })"
+                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 transition shadow-2xs"
+                            title="Unduh format spreadsheet Excel"
+                        >
+                            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Ekspor Excel
+                        </a>
+                        <a
+                            :href="route('admin.dashboard.export-stock', { type: activeStockModal, format: 'pdf', auto_print: 1 })"
+                            target="_blank"
+                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-red-50 text-red-800 hover:bg-red-100 border border-red-200 transition shadow-2xs"
+                            title="Buka dokumen siap cetak atau simpan ke PDF"
+                        >
+                            <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            Cetak / PDF
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Modal Body: Scrollable -->
                 <div class="p-5 overflow-y-auto space-y-4 flex-grow text-xs">
                     <!-- Konten Beras -->

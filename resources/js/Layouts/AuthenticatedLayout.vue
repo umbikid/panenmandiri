@@ -51,6 +51,12 @@ const showingNavigationDropdown = ref(false);
                                         Produk
                                     </NavLink>
                                     <NavLink
+                                        :href="route('admin.categories.index')"
+                                        :active="route().current('admin.categories.*')"
+                                    >
+                                        Kategori
+                                    </NavLink>
+                                    <NavLink
                                         :href="route('admin.orders.index')"
                                         :active="route().current('admin.orders.*')"
                                     >
@@ -209,6 +215,9 @@ const showingNavigationDropdown = ref(false);
                             </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('admin.products.index')" :active="route().current('admin.products.*')">
                                 Kelola Produk & Harga
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('admin.categories.index')" :active="route().current('admin.categories.*')">
+                                Kelola Kategori
                             </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('admin.orders.index')" :active="route().current('admin.orders.*')">
                                 Transaksi & Pesanan

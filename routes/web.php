@@ -46,11 +46,14 @@ Route::get('/dashboard', function () {
 // Routing khusus Mitra
 Route::middleware(['auth', 'role:mitra'])->prefix('mitra')->name('mitra.')->group(function () {
     Route::get('/', [MitraDashboardController::class, 'index'])->name('dashboard');
+    Route::delete('products/{product}/photos/{photo}', [MitraProductController::class, 'destroyPhoto'])->name('products.photos.destroy');
+    Route::post('products/{product}/photos/{photo}/primary', [MitraProductController::class, 'setPrimaryPhoto'])->name('products.photos.primary');
     Route::resource('products', MitraProductController::class);
 });
 
 // Routing khusus Admin
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
@@ -58,18 +61,25 @@ use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/export-stock', [AdminDashboardController::class, 'exportStock'])->name('dashboard.export-stock');
     
+    // Kelola Kategori
+    Route::resource('categories', AdminCategoryController::class)->except(['create', 'show', 'edit']);
+
     // Kelola Produk & Harga Jual
     Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
+    Route::get('/products/export', [AdminProductController::class, 'export'])->name('products.export');
     Route::patch('/products/{product}/price', [AdminProductController::class, 'updatePrice'])->name('products.update-price');
     Route::patch('/products/{product}/status', [AdminProductController::class, 'updateStatus'])->name('products.update-status');
     
     // Kelola Pesanan / Transaksi
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/export', [AdminOrderController::class, 'export'])->name('orders.export');
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
     
     // Kelola Pengguna
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/export', [AdminUserController::class, 'export'])->name('users.export');
     Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
     Route::patch('/users/{user}/status', [AdminUserController::class, 'updateStatus'])->name('users.update-status');
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');

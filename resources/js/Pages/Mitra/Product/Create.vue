@@ -16,6 +16,7 @@ const props = defineProps({
 
 const form = useForm({
     name: '',
+    description: '',
     category_id: '',
     subcategory_id: '',
     stock: '',
@@ -136,6 +137,19 @@ const submit = () => {
                             />
                             <div class="text-right text-xs text-gray-500 mt-1">{{ form.name.length }}/200</div>
                             <InputError class="mt-2" :message="form.errors.name" />
+                        </div>
+
+                        <!-- Deskripsi Produk -->
+                        <div>
+                            <InputLabel for="description" value="Deskripsi Produk" />
+                            <textarea
+                                id="description"
+                                rows="4"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-600 focus:ring-green-600 text-sm"
+                                v-model="form.description"
+                                placeholder="Jelaskan detail spesifikasi produk, kondisi, mutu/kualitas, pakan (untuk ternak), atau catatan penting lainnya..."
+                            ></textarea>
+                            <InputError class="mt-2" :message="form.errors.description" />
                         </div>
 
                         <!-- Foto Produk -->
