@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\B2BController;
 use Illuminate\Http\Request;
 
 Route::get('/', [CatalogController::class, 'index'])->name('catalog.index');
+Route::get('/b2b', [B2BController::class, 'index'])->name('b2b.index');
 Route::get('/produk/{id}', [CatalogController::class, 'show'])->name('catalog.show');
 
 // Storage fallback route for environments where symlink is missing or unsupported

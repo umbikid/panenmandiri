@@ -25,6 +25,16 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
                     </div>
 
                     <div class="hidden md:flex md:items-center md:ms-6 space-x-3">
+                        <!-- Menu B2B (Terbuka untuk semua, terutama pengunjung/klien B2B) -->
+                        <Link
+                            :href="route('b2b.index')"
+                            class="text-sm px-3.5 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5"
+                            :class="route().current('b2b.*') ? 'bg-amber-400 text-emerald-950 shadow-sm' : 'text-amber-300 hover:text-white hover:bg-emerald-700/50 border border-amber-400/40'"
+                        >
+                            <span class="bg-amber-400 text-emerald-950 text-[10px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">B2B</span>
+                            <span>Layanan B2B</span>
+                        </Link>
+
                         <template v-if="$page.props.auth.user">
                             <!-- Keranjang Pembeli (Desktop) -->
                             <Link
@@ -81,9 +91,19 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 
         <!-- Bottom Nav (Mobile Only) -->
         <div class="md:hidden fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around items-center h-16 z-40 px-2 pb-safe">
-            <Link :href="route('catalog.index')" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-green-800" :class="{ 'text-green-800': route().current('catalog.index') }">
+            <Link :href="route('catalog.index')" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-green-800" :class="{ 'text-green-800 font-bold': route().current('catalog.index') }">
                 <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 <span class="text-[10px] font-medium">Beranda</span>
+            </Link>
+
+            <Link :href="route('b2b.index')" class="flex flex-col items-center justify-center w-full h-full text-gray-500 hover:text-green-800 relative" :class="{ 'text-green-800 font-bold': route().current('b2b.*') }">
+                <div class="relative">
+                    <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    <span class="absolute -top-1 -right-2 bg-amber-400 text-emerald-950 font-black text-[8px] px-1 rounded shadow-xs">B2B</span>
+                </div>
+                <span class="text-[10px] font-medium">B2B</span>
             </Link>
 
             <!-- Keranjang Mobile -->

@@ -7,8 +7,16 @@ const props = defineProps({
     products: Object,
     categories: Array,
     provinces: Array,
-    filters: Object
+    filters: Object,
+    metrics: {
+        type: Object,
+        default: () => ({ total_stock_rice: 0, total_stock_livestock: 0 })
+    }
 });
+
+const formatNumber = (number) => {
+    return new Intl.NumberFormat('id-ID').format(number || 0);
+};
 
 const searchCategory = ref(props.filters.category || '');
 const searchRegency = ref(props.filters.regency_id || '');
@@ -93,8 +101,124 @@ watch([searchCategory, searchRegency], () => {
 
     <PublicLayout>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            
-                        <!-- Search Bar -->
+            <!-- Header Judul Katalog & Menu B2B Banner -->
+            <div class="mb-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold mb-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                            Koperasi Mitra Mandiri (KMM)
+                        </div>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+                            Katalog Produk KMM
+                        </h1>
+                        <p class="text-sm text-gray-600 mt-1">
+                            Pasokan hasil panen pangan dan hewan ternak segar langsung dari petani & peternak terpercaya.
+                        </p>
+                    </div>
+
+                    <!-- Shortcut B2B Landing Page -->
+                    <Link
+                        :href="route('b2b.index')"
+                        class="inline-flex items-center justify-between sm:justify-center gap-3 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-emerald-950 font-bold text-sm shadow-sm hover:shadow-md transition group border border-amber-300/80"
+                    >
+                        <div class="flex items-center gap-2">
+                            <span class="bg-emerald-950 text-amber-300 text-[10px] px-2 py-0.5 rounded font-black tracking-wider uppercase">B2B</span>
+                            <span>Layanan Pengadaan & Grosir</span>
+                        </div>
+                        <svg class="w-4 h-4 text-emerald-950 group-hover:translate-x-1 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </Link>
+                </div>
+
+                <!-- Blok Total Stok Hasil Panen dan Ternak -->
+                <div class="mt-5 bg-gradient-to-br from-emerald-900 via-green-900 to-emerald-950 rounded-2xl p-5 sm:p-6 text-white shadow-md border border-emerald-700/60 relative overflow-hidden">
+                    <!-- Aksen dekoratif background -->
+                    <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-amber-400/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="absolute -left-10 -top-10 w-44 h-44 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                    <div class="relative z-10">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-emerald-700/60 mb-5 gap-2">
+                            <div class="flex items-center gap-2.5">
+                                <div class="p-2 rounded-xl bg-emerald-800/90 border border-emerald-600/60 text-amber-400 shadow-xs">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">
+                                        Total Stok Hasil Panen dan Ternak
+                                    </h2>
+                                    <p class="text-xs text-emerald-200">
+                                        Informasi ketersediaan pasokan komoditas aktif yang siap dipesan
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="inline-flex items-center gap-1.5 text-xs text-amber-300 font-semibold bg-emerald-950/70 px-3 py-1.5 rounded-full border border-emerald-700/60 self-start sm:self-auto">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                Real-Time KMM
+                            </div>
+                        </div>
+
+                        <!-- Grid 2 Kartu Komoditas: Beras & Ternak -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Kartu Komoditas Beras -->
+                            <div class="bg-emerald-950/50 hover:bg-emerald-950/70 border border-emerald-600/40 rounded-xl p-4 sm:p-5 transition flex items-center justify-between group shadow-xs">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-400 shadow-xs"></span>
+                                        <span class="text-xs uppercase tracking-wider font-bold text-amber-300">Stok Komoditas Beras</span>
+                                    </div>
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                                            {{ formatNumber(metrics?.total_stock_rice || 0) }}
+                                        </span>
+                                        <span class="text-base font-bold text-amber-300">kg</span>
+                                    </div>
+                                    <p class="text-xs text-emerald-200/90">
+                                        Varietas Pandan Wangi, IR64, Rojolele, IR 42, C4 & Lainnya
+                                    </p>
+                                </div>
+                                <div class="p-3 bg-amber-400/20 text-amber-400 rounded-xl group-hover:scale-105 transition-transform shrink-0 border border-amber-400/30">
+                                    <!-- Icon Karung Padi / Beras -->
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Kartu Komoditas Ternak -->
+                            <div class="bg-emerald-950/50 hover:bg-emerald-950/70 border border-emerald-600/40 rounded-xl p-4 sm:p-5 transition flex items-center justify-between group shadow-xs">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-xs"></span>
+                                        <span class="text-xs uppercase tracking-wider font-bold text-emerald-300">Stok Komoditas Ternak</span>
+                                    </div>
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                                            {{ formatNumber(metrics?.total_stock_livestock || 0) }}
+                                        </span>
+                                        <span class="text-base font-bold text-emerald-300">ekor</span>
+                                    </div>
+                                    <p class="text-xs text-emerald-200/90">
+                                        Sapi, Kambing & Domba Sehat Terverifikasi
+                                    </p>
+                                </div>
+                                <div class="p-3 bg-emerald-400/20 text-emerald-300 rounded-xl group-hover:scale-105 transition-transform shrink-0 border border-emerald-400/30">
+                                    <!-- Icon Hewan Ternak -->
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
             <div class="mb-4 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
                 <form @submit.prevent="applyFilters" class="relative">
                     <input 

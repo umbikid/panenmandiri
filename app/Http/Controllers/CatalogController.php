@@ -34,10 +34,22 @@ class CatalogController extends Controller
         // Caching provinces could be good but for now we just load them
         $provinces = Province::with('regencies')->get();
 
+        $totalStockRice = (float) Product::where('status', 'active')
+            ->whereHas('category', fn($q) => $q->where('type', 'rice'))
+            ->sum('stock');
+
+        $totalStockLivestock = (float) Product::where('status', 'active')
+            ->whereHas('category', fn($q) => $q->where('type', 'livestock'))
+            ->sum('stock');
+
         return Inertia::render('Catalog/Index', [
             'products' => $products,
             'categories' => $categories,
             'provinces' => $provinces,
+            'metrics' => [
+                'total_stock_rice' => $totalStockRice,
+                'total_stock_livestock' => $totalStockLivestock,
+            ],
             'filters' => $request->only(['q', 'category', 'regency_id'])
         ]);
     }
